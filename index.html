@@ -135,14 +135,16 @@
 <body>
 
 <main class="card">
-  <div class="brand">Teljesítményértékelő Rendszer</div>
+  <div class="brand">Teljesítményértékelő Rendszer · Vezetői modul</div>
 
   <!-- Kezdőképernyő -->
   <section class="screen active" id="intro">
+    <span class="badge">Vezetői felület</span>
     <h1>Munkatársi teljesítményértékelés</h1>
-    <p>Ez a kérdőív strukturált formában támogatja az időszakos teljesítményértékelést.
-       A jelenlegi értékelés <strong>Anna</strong> munkatársra vonatkozik.</p>
-    <p>A kitöltés körülbelül 1 percet vesz igénybe. Kérjük, válaszait legjobb
+    <p>Üdvözöljük! Ez a felület kifejezetten vezetők számára készült, és strukturált
+       formában támogatja az időszakos teljesítményértékelést. A jelenlegi értékelés
+       <strong>Anna</strong> munkatársra vonatkozik.</p>
+    <p>A kitöltés körülbelül fél percet vesz igénybe. Kérjük, válaszait legjobb
        megítélése szerint adja meg.</p>
     <div class="actions">
       <button class="btn primary" id="startBtn">Értékelés indítása</button>
@@ -212,28 +214,20 @@
   // ── Kérdések (itt lehet szerkeszteni / bővíteni) ────────────────────────────
   const QUESTIONS = [
     {
-      q: "Hogyan értékeli Anna szakmai tudását és felkészültségét?",
-      opts: ["Fejlesztendő", "Megfelelő", "Jó", "Kiváló"]
+      q: "Hogyan értékeli Anna problémamegoldó képességét?",
+      opts: ["Jó", "Kiváló", "A problémák maguktól megoldódnak a közelében", "Nem emlékszem, mikor volt utoljára probléma"]
     },
     {
-      q: "Milyen mértékben tartja be a határidőket?",
-      opts: ["Ritkán", "Általában", "Legtöbbször", "Mindig"]
+      q: "Mi történne, ha Anna egy teljes hétre szabadságra menne?",
+      opts: ["Minden menne tovább a megszokott rendben", "Kisebb fennakadások lennének", "Komoly fennakadások lennének", "Erre gondolni sem szeretnénk"]
     },
     {
-      q: "Hogyan értékeli együttműködését a csapaton belül?",
-      opts: ["Fejlesztendő", "Megfelelő", "Jó", "Kiváló"]
+      q: "Ha Anna egy Excel-függvény lenne, melyik lenne?",
+      opts: ["SZUM – nélküle nem áll össze semmi", "FKERES – mindig mindent megtalál", "HA – mindenre van megoldása", "Az összes egyszerre"]
     },
     {
-      q: "Mennyire dolgozik önállóan, milyen a problémamegoldó képessége?",
-      opts: ["Sok támogatást igényel", "Esetenként támogatást igényel", "Önállóan dolgozik", "Teljesen önálló, másokat is támogat"]
-    },
-    {
-      q: "Hogyan értékeli munkájának minőségét és pontosságát?",
-      opts: ["Fejlesztendő", "Megfelelő", "Jó", "Kiváló"]
-    },
-    {
-      q: "Összességében hogyan értékeli az elmúlt időszak teljesítményét?",
-      opts: ["Elmaradt az elvárásoktól", "Megfelelt az elvárásoknak", "Meghaladta az elvárásokat", "Jelentősen meghaladta az elvárásokat"]
+      q: "Összességében hogyan értékeli Anna teljesítményét?",
+      opts: ["Kiváló", "Kiemelkedő", "10/10", "A skála bővítésére lenne szükség"]
     }
   ];
 
