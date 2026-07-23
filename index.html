@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Anna 3000™ · Teljesítményértékelő rendszer</title>
+<title>Teljesítményértékelő rendszer</title>
 <style>
   :root{
     color-scheme: light dark;
@@ -135,19 +135,18 @@
 <body>
 
 <main class="card">
-  <div class="brand">Teljesítményértékelő Rendszer 3000™</div>
+  <div class="brand">Teljesítményértékelő Rendszer</div>
 
   <!-- Kezdőképernyő -->
   <section class="screen active" id="intro">
-    <h1>Üdvözöljük, kedves Vezető! 👋</h1>
-    <p>Ez a tudományosan megalapozott, tökéletesen objektív rendszer néhány rövid kérdés
-       alapján kiértékeli <strong>Anna</strong> teljesítményét, majd személyre szabott
-       vezetői javaslatot készít.</p>
-    <p>A kitöltés kb. 1 percet vesz igénybe. Az eredmény természetesen teljesen nyitott.<sup>*</sup></p>
+    <h1>Munkatársi teljesítményértékelés</h1>
+    <p>Ez a kérdőív strukturált formában támogatja az időszakos teljesítményértékelést.
+       A jelenlegi értékelés <strong>Anna</strong> munkatársra vonatkozik.</p>
+    <p>A kitöltés körülbelül 1 percet vesz igénybe. Kérjük, válaszait legjobb
+       megítélése szerint adja meg.</p>
     <div class="actions">
-      <button class="btn primary" id="startBtn">Értékelés indítása →</button>
+      <button class="btn primary" id="startBtn">Értékelés indítása</button>
     </div>
-    <p class="fine" style="margin-top:16px">* Nem az.</p>
   </section>
 
   <!-- Kérdések -->
@@ -162,50 +161,48 @@
   <section class="screen" id="processing">
     <h2>Kiértékelés folyamatban…</h2>
     <div class="track"><div class="fill" id="procFill"></div></div>
-    <p class="muted" id="procText">Válaszok elemzése…</p>
+    <p class="muted" id="procText">Válaszok feldolgozása…</p>
   </section>
 
   <!-- Eredmény -->
   <section class="screen" id="result">
-    <span class="badge">Hivatalos eredmény</span>
-    <p class="muted" style="margin-bottom:4px">Anna teljesítménye:</p>
-    <div class="score">127<span class="scoreOf">/100</span></div>
-    <p class="fine">(A rendszer háromszor újraszámolta. Az eredmény nem változott.)</p>
+    <span class="badge">Értékelés eredménye</span>
+    <p class="muted" style="margin-bottom:4px">Összesített pontszám:</p>
+    <div class="score">94<span class="scoreOf">/100</span></div>
+    <p class="fine">Minősítés: kiemelkedő teljesítmény</p>
     <hr class="sep">
-    <p class="muted" style="margin-bottom:2px">A rendszer egyértelmű javaslata:</p>
-    <h2 class="verdict">Azonnali, jelentős fizetésemelés 📈</h2>
-    <p>Javasolt mérték: <strong>nagy</strong>. Sőt: <strong>nagyon nagy</strong>.</p>
-    <p class="fine">A javaslat tudományosan megalapozott, végleges és megfellebbezhetetlen.</p>
+    <p class="muted" style="margin-bottom:2px">A rendszer javaslata:</p>
+    <h2 class="verdict">Jelentős mértékű béremelés</h2>
+    <p class="fine">A javaslat az értékelés eredményei alapján automatikusan készült.</p>
     <div class="actions">
-      <button class="btn accept" id="acceptBtn">Elfogadom ✓</button>
+      <button class="btn accept" id="acceptBtn">Jóváhagyom</button>
       <button class="btn deny" id="denyBtn">Elutasítom</button>
     </div>
   </section>
 
   <!-- Vége -->
   <section class="screen" id="final">
-    <h1>🎉 Fizetésemelés elfogadva!</h1>
-    <p>Gratulálunk! Ön ma kiváló – és természetesen teljesen önálló – vezetői döntést hozott.</p>
+    <h1>Béremelés jóváhagyva</h1>
+    <p>A döntés rögzítésre került. Az érintett munkatárs automatikus értesítése folyamatban.</p>
     <div class="decree">
-      <div class="decreeTitle">Határozat</div>
-      <p style="margin:0"><strong>Anna</strong> részére a <strong>jelentős fizetésemelés</strong> jóváhagyva.<br>
-         A döntés végleges és visszavonhatatlan.</p>
+      <div class="decreeTitle">Összegzés</div>
+      <p style="margin:0">Munkatárs: <strong>Anna</strong><br>
+         Intézkedés: <strong>jelentős mértékű béremelés</strong><br>
+         Státusz: jóváhagyva</p>
       <div class="stamp">Jóváhagyva ✓</div>
       <div class="meta">
-        <span>Kelt: <span id="stampDate"></span></span>
-        <span>Jóváhagyta: Ön, önszántából</span>
+        <span>Dátum: <span id="stampDate"></span></span>
+        <span>Hivatkozási szám: TR-2026-0847</span>
       </div>
     </div>
     <div class="actions">
       <button class="btn ghost" id="restartBtn">Új értékelés indítása</button>
     </div>
-    <p class="fine" style="margin-top:10px">(Az eredmény ugyanez lesz.)</p>
   </section>
 </main>
 
 <footer class="foot">
-  Teljesítményértékelő Rendszer 3000™ · 100% objektív · 0% elfogult<br>
-  Fejlesztette: független szakértői bizottság <em>(nem Anna)</em>
+  Teljesítményértékelő Rendszer · v2.4
 </footer>
 
 <div id="toast" role="status"></div>
@@ -215,37 +212,36 @@
   // ── Kérdések (itt lehet szerkeszteni / bővíteni) ────────────────────────────
   const QUESTIONS = [
     {
-      q: "Milyen gyakran menti meg Anna a napot?",
-      opts: ["Naponta", "Óránként", "Folyamatosan, valós időben", "Már azelőtt megoldja, hogy baj lenne"]
+      q: "Hogyan értékeli Anna szakmai tudását és felkészültségét?",
+      opts: ["Fejlesztendő", "Megfelelő", "Jó", "Kiváló"]
     },
     {
-      q: "Mi történne, ha Anna egy teljes hétig szabadságon lenne?",
-      opts: ["Enyhe pánik", "Teljes káosz", "Bele sem merek gondolni", "Ez elméleti síkon sem lehetséges"]
+      q: "Milyen mértékben tartja be a határidőket?",
+      opts: ["Ritkán", "Általában", "Legtöbbször", "Mindig"]
     },
     {
-      q: "Ha Anna egy Excel-függvény lenne, melyik lenne?",
-      opts: ["FKERES – mindig mindent megtalál", "SZUM – nélküle nem áll össze semmi", "HA – mindenre van megoldása", "Az összes egyszerre, egyetlen cellában"]
+      q: "Hogyan értékeli együttműködését a csapaton belül?",
+      opts: ["Fejlesztendő", "Megfelelő", "Jó", "Kiváló"]
     },
     {
-      q: "Milyen Anna hétfő reggel 8 órakor?",
-      opts: ["Profi", "Meglepően vidám", "Addigra már két meetingen túl van", "Ő az egyetlen ok, amiért a hétfő elviselhető"]
+      q: "Mennyire dolgozik önállóan, milyen a problémamegoldó képessége?",
+      opts: ["Sok támogatást igényel", "Esetenként támogatást igényel", "Önállóan dolgozik", "Teljesen önálló, másokat is támogat"]
     },
     {
-      q: "Értékelje Anna idei teljesítményét egy 1-től 10-ig terjedő skálán!",
-      opts: ["10/10", "11/10", "14/10", "A skála kevésnek bizonyult"]
+      q: "Hogyan értékeli munkájának minőségét és pontosságát?",
+      opts: ["Fejlesztendő", "Megfelelő", "Jó", "Kiváló"]
     },
     {
-      q: "Megérdemelne Anna egy fizetésemelést?",
-      opts: ["Igen", "Természetesen", "Abszolút", "Miért kérdés ez egyáltalán?"]
+      q: "Összességében hogyan értékeli az elmúlt időszak teljesítményét?",
+      opts: ["Elmaradt az elvárásoktól", "Megfelelt az elvárásoknak", "Meghaladta az elvárásokat", "Jelentősen meghaladta az elvárásokat"]
     }
   ];
 
   const PROCESSING_STEPS = [
-    "Válaszok elemzése…",
-    "Teljesítménymutatók feldolgozása…",
-    "Skála újrakalibrálása (Anna kilógott a tetején)…",
-    "Objektivitás ellenőrzése… 100% ✓",
-    "Vezetői javaslat generálása…"
+    "Válaszok feldolgozása…",
+    "Teljesítménymutatók számítása…",
+    "Összehasonlítás a szervezeti referenciaértékekkel…",
+    "Javaslat összeállítása…"
   ];
 
   // ── Segédfüggvények ─────────────────────────────────────────────────────────
@@ -264,7 +260,7 @@
     toastTimer = setTimeout(() => t.classList.remove("on"), 2600);
   }
 
-  // ── Kvíz ────────────────────────────────────────────────────────────────────
+  // ── Kérdőív ─────────────────────────────────────────────────────────────────
   let qi = 0, qLock = false;
 
   function renderQuestion(){
@@ -296,7 +292,7 @@
 
   $("startBtn").addEventListener("click", () => { qi = 0; renderQuestion(); show("quiz"); });
 
-  // ── Kiértékelés (látszat-elemzés) ───────────────────────────────────────────
+  // ── Kiértékelés ─────────────────────────────────────────────────────────────
   function startProcessing(){
     show("processing");
     let i = 0;
@@ -315,7 +311,7 @@
     }, 750);
   }
 
-  // ── Az „Elutasítom" gomb kis kalandja ───────────────────────────────────────
+  // ── Elutasítás kezelése ─────────────────────────────────────────────────────
   const deny = $("denyBtn"), accept = $("acceptBtn");
   let denyClicks = 0, dodges = 0, accepted = false;
   const canHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -333,20 +329,19 @@
     denyClicks++;
     deny.style.transform = "translate(0,0)";
     if (denyClicks === 1){
-      deny.textContent = "Elutasítom…?";
       deny.style.scale = "0.9";
       accept.style.scale = "1.07";
-      toast("Hiba 403: Az elutasítás ebben a verzióban nem támogatott.");
+      toast("Az elutasítás funkció átmenetileg nem érhető el.");
     } else if (denyClicks === 2){
-      deny.textContent = "Hát… izé…";
+      deny.textContent = "Nem elérhető";
       deny.style.scale = "0.82";
       accept.style.scale = "1.14";
-      toast("A gomb rövid gondolkodás után átértékelte az álláspontját.");
+      toast("A kérés nem dolgozható fel. Kérjük, válassza a jóváhagyást.");
     } else {
-      deny.textContent = "Elfogadom ✓";
+      deny.textContent = "Jóváhagyom";
       deny.classList.add("converted");
       deny.style.scale = "1";
-      toast("Rendszerfrissítés kész: mostantól minden gomb Elfogadás üzemmódban működik.");
+      toast("A gomb funkciója frissült: jóváhagyás.");
     }
   });
 
@@ -387,7 +382,6 @@
           rot: Math.random() * Math.PI * 2,
           vr: (Math.random() - 0.5) * 0.25,
           color: COLORS[(Math.random() * COLORS.length) | 0],
-          emoji: Math.random() < 0.12 ? (Math.random() < 0.5 ? "💰" : "📈") : null,
           sway: Math.random() * Math.PI * 2
         });
       }
@@ -413,15 +407,8 @@
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.rotate(p.rot);
-        if (p.emoji){
-          ctx.font = "20px system-ui";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText(p.emoji, 0, 0);
-        } else {
-          ctx.fillStyle = p.color;
-          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-        }
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
         ctx.restore();
       }
       if (parts.length) requestAnimationFrame(tick);
