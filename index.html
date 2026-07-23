@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anna 3000™ · Teljesítményértékelő rendszer</title>
+<style>
+  :root{
+    color-scheme: light dark;
+    --bg:#f4f5f7; --card:#ffffff; --text:#1b1e24; --muted:#6b7280;
+    --accent:#4f46e5; --accent-soft:#eef2ff;
+    --green:#16a34a; --green-strong:#15803d; --green-soft:#ecfdf5;
+    --border:#e5e7eb;
+    --shadow:0 10px 30px rgba(17,24,39,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#111318; --card:#1b1e26; --text:#eceef2; --muted:#9aa1ad;
+      --accent:#8b8ef9; --accent-soft:#262a44;
+      --green:#22c55e; --green-strong:#4ade80; --green-soft:#152a1f;
+      --border:#2a2f3a;
+      --shadow:0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0; overflow-x:hidden}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.55;
+    min-height:100vh; min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:20px;
+  }
+  .card{
+    background:var(--card); border-radius:20px; box-shadow:var(--shadow);
+    padding:36px; width:100%; max-width:600px;
+  }
+  .brand{
+    font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); font-weight:600; margin-bottom:18px;
+  }
+  h1{font-size:1.7rem; margin:.2em 0 .5em; line-height:1.25}
+  h2{font-size:1.35rem; margin:.4em 0 .5em; line-height:1.3}
+  p{margin:.6em 0}
+  .muted{color:var(--muted)}
+  .fine{font-size:.8rem; color:var(--muted)}
+  .sep{border:none; border-top:1px solid var(--border); margin:22px 0}
+
+  .screen{display:none}
+  .screen.active{display:block; animation:appear .35s ease both}
+  @keyframes appear{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+
+  .btn{
+    display:inline-block; border:none; cursor:pointer;
+    padding:14px 22px; border-radius:12px;
+    font:inherit; font-weight:600; font-size:1rem;
+    transition:filter .15s, scale .3s ease, transform .3s cubic-bezier(.2,.8,.2,1),
+               background-color .3s, color .3s, border-color .3s;
+  }
+  .btn:hover{filter:brightness(1.05)}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .primary{background:var(--accent); color:#fff}
+  .accept{background:var(--green); color:#fff; font-size:1.05rem; padding:16px 26px}
+  .deny{background:transparent; border:1.5px solid var(--border); color:var(--muted)}
+  .deny.converted{background:var(--green); border-color:transparent; color:#fff; font-weight:700}
+  .ghost{background:transparent; border:1.5px solid var(--border); color:var(--text)}
+  .actions{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:24px}
+
+  .qhead{display:flex; justify-content:flex-end; font-size:.8rem; color:var(--muted); font-weight:600}
+  .track{height:6px; background:var(--border); border-radius:99px; overflow:hidden; margin:10px 0 22px}
+  .fill{height:100%; width:0; background:var(--accent); border-radius:99px; transition:width .45s ease}
+  .opts{display:flex; flex-direction:column; gap:10px; margin-top:18px}
+  .option{
+    text-align:left; padding:14px 16px; border:1.5px solid var(--border);
+    background:transparent; border-radius:12px; color:var(--text);
+    font:inherit; font-size:1rem; cursor:pointer;
+    transition:border-color .15s, background .15s, transform .06s;
+  }
+  .option:hover{border-color:var(--accent)}
+  .option:active{transform:scale(.99)}
+  .option.selected{border-color:var(--accent); background:var(--accent-soft)}
+
+  .badge{
+    display:inline-block; background:var(--accent-soft); color:var(--accent);
+    font-size:.75rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    padding:6px 12px; border-radius:99px; margin-bottom:14px;
+  }
+  .score{font-size:4.2rem; font-weight:800; line-height:1; color:var(--accent); letter-spacing:-.02em}
+  .scoreOf{font-size:1.6rem; color:var(--muted); font-weight:600}
+  .verdict{color:var(--green-strong); font-size:1.5rem; margin:.3em 0}
+
+  .decree{
+    border:2px solid var(--green); border-radius:14px; background:var(--green-soft);
+    padding:20px; margin:20px 0;
+  }
+  .decreeTitle{
+    font-weight:800; letter-spacing:.18em; text-transform:uppercase;
+    font-size:.8rem; color:var(--green-strong); margin-bottom:8px;
+  }
+  .stamp{
+    display:inline-block; transform:rotate(-6deg);
+    border:3px solid var(--green); color:var(--green-strong);
+    padding:4px 12px; border-radius:10px; font-weight:800;
+    letter-spacing:.08em; text-transform:uppercase; margin:10px 0 4px;
+  }
+  .meta{
+    display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    font-size:.8rem; color:var(--muted); margin-top:12px;
+  }
+
+  #toast{
+    position:fixed; left:50%; bottom:28px; z-index:40;
+    transform:translateX(-50%) translateY(10px);
+    background:#111827ee; color:#f9fafb;
+    padding:12px 18px; border-radius:12px; font-size:.9rem;
+    max-width:min(90vw,420px); text-align:center;
+    opacity:0; pointer-events:none; transition:opacity .25s, transform .25s;
+  }
+  #toast.on{opacity:1; transform:translateX(-50%) translateY(0)}
+  #confetti{position:fixed; inset:0; pointer-events:none; z-index:30}
+
+  .foot{margin-top:18px; font-size:.75rem; color:var(--muted); text-align:center; line-height:1.6}
+
+  @media (max-width:480px){
+    .card{padding:26px 20px}
+    h1{font-size:1.45rem}
+    .score{font-size:3.4rem}
+    .actions .btn{width:100%}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important}
+  }
+</style>
+</head>
+<body>
+
+<main class="card">
+  <div class="brand">Teljesítményértékelő Rendszer 3000™</div>
+
+  <!-- Kezdőképernyő -->
+  <section class="screen active" id="intro">
+    <h1>Üdvözöljük, kedves Vezető! 👋</h1>
+    <p>Ez a tudományosan megalapozott, tökéletesen objektív rendszer néhány rövid kérdés
+       alapján kiértékeli <strong>Anna</strong> teljesítményét, majd személyre szabott
+       vezetői javaslatot készít.</p>
+    <p>A kitöltés kb. 1 percet vesz igénybe. Az eredmény természetesen teljesen nyitott.<sup>*</sup></p>
+    <div class="actions">
+      <button class="btn primary" id="startBtn">Értékelés indítása →</button>
+    </div>
+    <p class="fine" style="margin-top:16px">* Nem az.</p>
+  </section>
+
+  <!-- Kérdések -->
+  <section class="screen" id="quiz">
+    <div class="qhead"><span id="qNum"></span></div>
+    <div class="track"><div class="fill" id="qFill"></div></div>
+    <h2 id="qText"></h2>
+    <div class="opts" id="qOpts"></div>
+  </section>
+
+  <!-- Kiértékelés -->
+  <section class="screen" id="processing">
+    <h2>Kiértékelés folyamatban…</h2>
+    <div class="track"><div class="fill" id="procFill"></div></div>
+    <p class="muted" id="procText">Válaszok elemzése…</p>
+  </section>
+
+  <!-- Eredmény -->
+  <section class="screen" id="result">
+    <span class="badge">Hivatalos eredmény</span>
+    <p class="muted" style="margin-bottom:4px">Anna teljesítménye:</p>
+    <div class="score">127<span class="scoreOf">/100</span></div>
+    <p class="fine">(A rendszer háromszor újraszámolta. Az eredmény nem változott.)</p>
+    <hr class="sep">
+    <p class="muted" style="margin-bottom:2px">A rendszer egyértelmű javaslata:</p>
+    <h2 class="verdict">Azonnali, jelentős fizetésemelés 📈</h2>
+    <p>Javasolt mérték: <strong>nagy</strong>. Sőt: <strong>nagyon nagy</strong>.</p>
+    <p class="fine">A javaslat tudományosan megalapozott, végleges és megfellebbezhetetlen.</p>
+    <div class="actions">
+      <button class="btn accept" id="acceptBtn">Elfogadom ✓</button>
+      <button class="btn deny" id="denyBtn">Elutasítom</button>
+    </div>
+  </section>
+
+  <!-- Vége -->
+  <section class="screen" id="final">
+    <h1>🎉 Fizetésemelés elfogadva!</h1>
+    <p>Gratulálunk! Ön ma kiváló – és természetesen teljesen önálló – vezetői döntést hozott.</p>
+    <div class="decree">
+      <div class="decreeTitle">Határozat</div>
+      <p style="margin:0"><strong>Anna</strong> részére a <strong>jelentős fizetésemelés</strong> jóváhagyva.<br>
+         A döntés végleges és visszavonhatatlan.</p>
+      <div class="stamp">Jóváhagyva ✓</div>
+      <div class="meta">
+        <span>Kelt: <span id="stampDate"></span></span>
+        <span>Jóváhagyta: Ön, önszántából</span>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="restartBtn">Új értékelés indítása</button>
+    </div>
+    <p class="fine" style="margin-top:10px">(Az eredmény ugyanez lesz.)</p>
+  </section>
+</main>
+
+<footer class="foot">
+  Teljesítményértékelő Rendszer 3000™ · 100% objektív · 0% elfogult<br>
+  Fejlesztette: független szakértői bizottság <em>(nem Anna)</em>
+</footer>
+
+<div id="toast" role="status"></div>
+<canvas id="confetti"></canvas>
+
+<script>
+  // ── Kérdések (itt lehet szerkeszteni / bővíteni) ────────────────────────────
+  const QUESTIONS = [
+    {
+      q: "Milyen gyakran menti meg Anna a napot?",
+      opts: ["Naponta", "Óránként", "Folyamatosan, valós időben", "Már azelőtt megoldja, hogy baj lenne"]
+    },
+    {
+      q: "Mi történne, ha Anna egy teljes hétig szabadságon lenne?",
+      opts: ["Enyhe pánik", "Teljes káosz", "Bele sem merek gondolni", "Ez elméleti síkon sem lehetséges"]
+    },
+    {
+      q: "Ha Anna egy Excel-függvény lenne, melyik lenne?",
+      opts: ["FKERES – mindig mindent megtalál", "SZUM – nélküle nem áll össze semmi", "HA – mindenre van megoldása", "Az összes egyszerre, egyetlen cellában"]
+    },
+    {
+      q: "Milyen Anna hétfő reggel 8 órakor?",
+      opts: ["Profi", "Meglepően vidám", "Addigra már két meetingen túl van", "Ő az egyetlen ok, amiért a hétfő elviselhető"]
+    },
+    {
+      q: "Értékelje Anna idei teljesítményét egy 1-től 10-ig terjedő skálán!",
+      opts: ["10/10", "11/10", "14/10", "A skála kevésnek bizonyult"]
+    },
+    {
+      q: "Megérdemelne Anna egy fizetésemelést?",
+      opts: ["Igen", "Természetesen", "Abszolút", "Miért kérdés ez egyáltalán?"]
+    }
+  ];
+
+  const PROCESSING_STEPS = [
+    "Válaszok elemzése…",
+    "Teljesítménymutatók feldolgozása…",
+    "Skála újrakalibrálása (Anna kilógott a tetején)…",
+    "Objektivitás ellenőrzése… 100% ✓",
+    "Vezetői javaslat generálása…"
+  ];
+
+  // ── Segédfüggvények ─────────────────────────────────────────────────────────
+  const $ = id => document.getElementById(id);
+
+  function show(id){
+    document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === id));
+  }
+
+  let toastTimer;
+  function toast(msg){
+    const t = $("toast");
+    t.textContent = msg;
+    t.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("on"), 2600);
+  }
+
+  // ── Kvíz ────────────────────────────────────────────────────────────────────
+  let qi = 0, qLock = false;
+
+  function renderQuestion(){
+    const cur = QUESTIONS[qi];
+    $("qNum").textContent = (qi + 1) + ". kérdés / " + QUESTIONS.length;
+    $("qFill").style.width = (qi / QUESTIONS.length * 100) + "%";
+    $("qText").textContent = cur.q;
+    const box = $("qOpts");
+    box.innerHTML = "";
+    cur.opts.forEach(label => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "option";
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        if (qLock) return;
+        qLock = true;
+        b.classList.add("selected");
+        setTimeout(() => {
+          qLock = false;
+          qi++;
+          if (qi < QUESTIONS.length) renderQuestion();
+          else startProcessing();
+        }, 380);
+      });
+      box.appendChild(b);
+    });
+  }
+
+  $("startBtn").addEventListener("click", () => { qi = 0; renderQuestion(); show("quiz"); });
+
+  // ── Kiértékelés (látszat-elemzés) ───────────────────────────────────────────
+  function startProcessing(){
+    show("processing");
+    let i = 0;
+    $("procText").textContent = PROCESSING_STEPS[0];
+    $("procFill").style.width = "8%";
+    const t = setInterval(() => {
+      i++;
+      if (i < PROCESSING_STEPS.length){
+        $("procText").textContent = PROCESSING_STEPS[i];
+        $("procFill").style.width = (8 + i * (86 / (PROCESSING_STEPS.length - 1))) + "%";
+      } else {
+        clearInterval(t);
+        $("procFill").style.width = "100%";
+        setTimeout(() => show("result"), 500);
+      }
+    }, 750);
+  }
+
+  // ── Az „Elutasítom" gomb kis kalandja ───────────────────────────────────────
+  const deny = $("denyBtn"), accept = $("acceptBtn");
+  let denyClicks = 0, dodges = 0, accepted = false;
+  const canHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  deny.addEventListener("pointerenter", () => {
+    if (!canHover || denyClicks > 0 || dodges >= 2) return;
+    dodges++;
+    const dx = Math.round(Math.random() * 140 - 70);
+    const dy = Math.round(Math.random() * 70 - 35);
+    deny.style.transform = "translate(" + dx + "px," + dy + "px)";
+  });
+
+  deny.addEventListener("click", () => {
+    if (deny.classList.contains("converted")){ acceptRaise(); return; }
+    denyClicks++;
+    deny.style.transform = "translate(0,0)";
+    if (denyClicks === 1){
+      deny.textContent = "Elutasítom…?";
+      deny.style.scale = "0.9";
+      accept.style.scale = "1.07";
+      toast("Hiba 403: Az elutasítás ebben a verzióban nem támogatott.");
+    } else if (denyClicks === 2){
+      deny.textContent = "Hát… izé…";
+      deny.style.scale = "0.82";
+      accept.style.scale = "1.14";
+      toast("A gomb rövid gondolkodás után átértékelte az álláspontját.");
+    } else {
+      deny.textContent = "Elfogadom ✓";
+      deny.classList.add("converted");
+      deny.style.scale = "1";
+      toast("Rendszerfrissítés kész: mostantól minden gomb Elfogadás üzemmódban működik.");
+    }
+  });
+
+  accept.addEventListener("click", acceptRaise);
+
+  function acceptRaise(){
+    if (accepted) return;
+    accepted = true;
+    $("stampDate").textContent = new Date().toLocaleDateString("hu-HU", { year:"numeric", month:"long", day:"numeric" });
+    show("final");
+    launchConfetti();
+  }
+
+  $("restartBtn").addEventListener("click", () => location.reload());
+
+  // ── Konfetti ────────────────────────────────────────────────────────────────
+  function launchConfetti(){
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const c = $("confetti"), ctx = c.getContext("2d");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    c.width = innerWidth * dpr;
+    c.height = innerHeight * dpr;
+    c.style.width = innerWidth + "px";
+    c.style.height = innerHeight + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const COLORS = ["#4f46e5", "#16a34a", "#f59e0b", "#ec4899", "#06b6d4", "#84cc16"];
+    const parts = [];
+    const spawn = n => {
+      for (let i = 0; i < n; i++){
+        parts.push({
+          x: Math.random() * innerWidth,
+          y: -30 - Math.random() * innerHeight * 0.4,
+          vx: (Math.random() - 0.5) * 2.2,
+          vy: 2.4 + Math.random() * 3.2,
+          w: 7 + Math.random() * 7,
+          h: 10 + Math.random() * 10,
+          rot: Math.random() * Math.PI * 2,
+          vr: (Math.random() - 0.5) * 0.25,
+          color: COLORS[(Math.random() * COLORS.length) | 0],
+          emoji: Math.random() < 0.12 ? (Math.random() < 0.5 ? "💰" : "📈") : null,
+          sway: Math.random() * Math.PI * 2
+        });
+      }
+    };
+    spawn(140);
+    setTimeout(() => spawn(90), 650);
+
+    let last = performance.now();
+    (function tick(now){
+      const dt = Math.min((now - last) / 16.7, 2);
+      last = now;
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      for (const p of parts){
+        p.sway += 0.05 * dt;
+        p.x += p.vx * dt + Math.sin(p.sway) * 0.6;
+        p.y += p.vy * dt;
+        p.rot += p.vr * dt;
+      }
+      for (let i = parts.length - 1; i >= 0; i--){
+        if (parts[i].y > innerHeight + 40) parts.splice(i, 1);
+      }
+      for (const p of parts){
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        if (p.emoji){
+          ctx.font = "20px system-ui";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(p.emoji, 0, 0);
+        } else {
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        }
+        ctx.restore();
+      }
+      if (parts.length) requestAnimationFrame(tick);
+      else ctx.clearRect(0, 0, innerWidth, innerHeight);
+    })(last);
+  }
+</script>
+</body>
+</html>
